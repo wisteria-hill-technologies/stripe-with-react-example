@@ -1,44 +1,43 @@
-import React, {Component} from 'react';
-import {CardElement, injectStripe} from 'react-stripe-elements';
+import React, { useState }from 'react';
+import { CardElement, injectStripe } from 'react-stripe-elements';
 import './CheckoutForm.css';
 
-class CheckoutForm extends Component {
-  state = {
-    disabled: false,
-    complete: false
-  };
+const CheckoutForm = (props) => {
+  const [disabled, setDisabled] = useState(false);
+  const [complete, setComplete] = useState(false);
 
-  submit = async (ev) => {
-    let {token} = await this.props.stripe.createToken({name: "Example guy"});
-    if(token) {
-      this.setState({
-        disabled: true
-      });
-      let response = await fetch("/charge", {
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const {token} = await props.stripe.createToken({name: "Example guy"});
+    if (token) {
+      setDisabled(true);
+      const response = await fetch("/charge", {
         method: "POST",
         headers: {"Content-Type": "text/plain"},
         body: token.id
       });
-
-      if (response.ok) this.setState({complete: true, disabled: false });
+      if (response.ok) {
+        console.log("Purchase Complete!");
+        setComplete(true);
+        setDisabled(true);
+      }
     }
   };
 
-  render() {
-    if (this.state.complete) return <h1>Purchase Complete</h1>;
+  if (complete) return <h1>Purchase Complete</h1>;
 
-    return (
-      <div className="checkout">
-        <p>Would you like to complete the purchase?</p>
-        <CardElement />
-        {
-          this.state.disabled
+  return (
+    <div className="checkout">
+      <p>Would you like to complete the purchase?</p>
+      <CardElement />
+      {
+        disabled
           ? <p>Processing ... </p>
-          : <button onClick={this.submit} disabled={this.state.disabled}>Send</button>
-        }
-      </div>
+          : <button onClick={onSubmit} disabled={disabled}>Send</button>
+      }
+    </div>
   );
-  }
-}
+};
+
 
 export default injectStripe(CheckoutForm);

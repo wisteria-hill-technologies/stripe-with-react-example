@@ -4,10 +4,10 @@
   "private": true,
   "proxy": "http://localhost:9000",
   "dependencies": {
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-scripts": "2.1.2",
-    "react-stripe-elements": "^2.0.1"
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-scripts": "3.1.2",
+    "react-stripe-elements": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

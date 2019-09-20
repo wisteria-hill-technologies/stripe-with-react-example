@@ -8,12 +8,13 @@ app.use(require("body-parser").text());
 
 
 app.post("/charge", async (req, res) => {
+  console.log('req.body>>>', req.body);
   try {
     let {status} = await stripe.charges.create({
       amount: 2000,
       currency: "usd",
       description: "An example charge",
-      source: req.body
+      source: req.body   // req.body contains token sent from the FE
     });
 
     res.json({status});
