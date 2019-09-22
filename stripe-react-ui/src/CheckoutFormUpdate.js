@@ -7,6 +7,7 @@ const CheckoutForm = (props) => {
     fetch("/start-payment")
       .then(res => res.json())
       .then(result => {
+        console.log('result>>>', result);
         setClientSecret(result.client_secret);
       })
       .catch(err => {
@@ -25,7 +26,13 @@ const CheckoutForm = (props) => {
     const {paymentIntent, error} = await props.stripe.handleCardPayment(
       clientSecret, cardElement, {
         payment_method_data: {
-          billing_details: {name: "Tester Toby"}
+          billing_details: {
+            name: "John Tester",
+            email: "test@test.com"
+          },
+          metadata: {
+            test: "test 123"
+          }
         },
         receipt_email: "test@test.com"
       }

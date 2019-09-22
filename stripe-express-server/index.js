@@ -29,11 +29,13 @@ app.post("/charge", async (req, res) => {
 app.get("/start-payment", async (req, res) => {
   // Call this endpoint to set paymentIntents first.
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: 200000,
+    amount: 30000,
     currency: 'gbp',
     payment_method_types: ['card'],
-    description: "testing paymentIntent"
+    description: "testing paymentIntent",
+    metadata: { test: 'test 123' }  // additional info if I want to add here
   });
+  console.log('paymentIntent.id>>>>', paymentIntent.id);
   // Return client_secret for the paymentIntent created above to the Front end.
   res.json({client_secret: paymentIntent.client_secret});
 });
@@ -55,6 +57,8 @@ app.post('/webhook', bodyParser.raw({type: 'application/json'}), (request, respo
     case 'payment_intent.succeeded':
       intent = event.data.object;
       console.log("Succeeded:", intent.id);
+      console.log("Succeeded: billing_details>>>", intent.charges.data[0].billing_details);
+      console.log("Succeeded: metadata>>>", intent.charges.data[0].metadata);
       break;
     case 'payment_intent.payment_failed':
       intent = event.data.object;
