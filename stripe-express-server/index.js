@@ -2,6 +2,7 @@ require('dotenv').config();
 const app = require("express")();
 // Set your secret key: remember to change this to your live secret key in production
 // See your keys here: https://dashboard.stripe.com/account/apikeys
+const endpointSecret = process.env.ENDPOINT_SECRET;
 var stripe = require("stripe")(process.env.STRIPE_TEST_SECRET);
 const bodyParser = require('body-parser'); //Help parse incoming HTTP requests
 app.use(bodyParser.text());
@@ -43,16 +44,14 @@ app.get("/start-payment", async (req, res) => {
 app.post('/webhook', bodyParser.raw({type: 'application/json'}), (request, response) => {
   // Set stripe dashboard so that stripe will trigger this endpoint when paymentIntent status changes.
   console.log('contacted by webhook!!!');
-
-  let event = null;
+  const sig = request.headers['stripe-signature'];
+  let event;
   try {
-    event = JSON.parse(request.body) || {};
-  }
-  catch (err) {
-    response.status(400).send(`Webhook Error: ${err.message}`);
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+  } catch (err) {
+    return response.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  let intent = null;
   switch (event.type) {
     case 'payment_intent.succeeded':
       intent = event.data.object;
