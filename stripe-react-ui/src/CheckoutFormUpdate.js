@@ -29,9 +29,6 @@ const CheckoutForm = (props) => {
           billing_details: {
             name: "John Tester",
             email: "test@test.com"
-          },
-          metadata: {
-            test: "test 123"
           }
         },
         receipt_email: "test@test.com"

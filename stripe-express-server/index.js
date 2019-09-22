@@ -33,7 +33,7 @@ app.get("/start-payment", async (req, res) => {
     currency: 'gbp',
     payment_method_types: ['card'],
     description: "testing paymentIntent",
-    metadata: { test: 'test 123' }  // additional info if I want to add here
+    metadata: { test: 'test 123' }  // additional info if I want to add here. maybe pass this info from the front end via /start-payment endpoint above.
   });
   console.log('paymentIntent.id>>>>', paymentIntent.id);
   // Return client_secret for the paymentIntent created above to the Front end.
